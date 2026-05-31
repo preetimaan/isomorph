@@ -1,0 +1,7 @@
+id: class-validator
+type: technology
+name: class-validator
+description: Decorator-based validation for TypeScript classes, common in NestJS.
+tags:
+  - typescript
+  - decorators

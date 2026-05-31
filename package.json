@@ -1,0 +1,34 @@
+{
+  "name": "isomorph",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "yarn validate && vite build",
+    "preview": "vite preview",
+    "validate": "tsx scripts/validate.ts",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "yaml": "^2.8.0",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.24",
+    "@types/react": "^18.3.23",
+    "@types/react-dom": "^18.3.7",
+    "@typescript-eslint/eslint-plugin": "^7.0.2",
+    "@typescript-eslint/parser": "^7.0.2",
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "^8.56.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "tsx": "^4.19.3",
+    "typescript": "^5.2.2",
+    "vite": "^5.1.4"
+  },
+  "packageManager": "yarn@4.15.0+sha512.07ec708ac11e2eaa4ea2b04cfbb272812f7e74a753f1595eaef4486c663a98306a30cca3e6fc40f7a0b168dcfb3a2490b6a5e0501e20fb69cc36f563dd161c53"
+}

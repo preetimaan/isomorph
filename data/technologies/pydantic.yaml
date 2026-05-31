@@ -1,0 +1,9 @@
+id: pydantic
+type: technology
+name: Pydantic
+description: Data validation and settings management using Python type hints.
+tags:
+  - python
+  - type-hints
+maturity: comfortable
+notes: Often serves both validation and serialization in FastAPI stacks.

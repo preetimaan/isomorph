@@ -1,0 +1,7 @@
+id: validation
+type: responsibility
+name: Validation
+description: Schema validation and constraint checking for data at system boundaries.
+tags:
+  - cross-cutting
+  - data-integrity

@@ -1,0 +1,7 @@
+id: fastapi
+type: ecosystem
+name: FastAPI Ecosystem
+description: Async Python API stack centered on FastAPI, Pydantic, and SQLAlchemy.
+tags:
+  - python
+  - backend

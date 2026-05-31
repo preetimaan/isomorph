@@ -1,0 +1,143 @@
+:root {
+  color-scheme: light dark;
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #e8eaed;
+  background-color: #0f1117;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+.app {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.header {
+  margin-bottom: 2rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  color: #8ab4f8;
+}
+
+h1 {
+  margin: 0;
+  font-size: 2.5rem;
+}
+
+.subtitle {
+  margin: 0.5rem 0 0;
+  color: #9aa0a6;
+}
+
+.panel {
+  background: #171923;
+  border: 1px solid #2d3142;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.panel h2 {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+}
+
+.panel h3 {
+  margin: 1rem 0 0.5rem;
+  font-size: 0.95rem;
+  color: #9aa0a6;
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+}
+
+.stats li {
+  background: #22263a;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+}
+
+.ok {
+  color: #81c995;
+  margin: 0;
+}
+
+.error {
+  color: #f28b82;
+  margin: 0;
+}
+
+input[type="search"] {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #2d3142;
+  background: #0f1117;
+  color: inherit;
+  font: inherit;
+}
+
+.results {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+}
+
+.results li {
+  display: grid;
+  grid-template-columns: 120px 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid #2d3142;
+}
+
+.node-type {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #8ab4f8;
+}
+
+.node-id {
+  font-size: 0.8rem;
+  color: #9aa0a6;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.panel ul:not(.stats):not(.results) {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+@media (max-width: 640px) {
+  .results li {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+}

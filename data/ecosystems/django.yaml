@@ -1,0 +1,7 @@
+id: django
+type: ecosystem
+name: Django Ecosystem
+description: Batteries-included Python web framework with ORM, admin, and DRF.
+tags:
+  - python
+  - backend

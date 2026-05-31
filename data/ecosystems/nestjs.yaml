@@ -1,0 +1,7 @@
+id: nestjs
+type: ecosystem
+name: NestJS Ecosystem
+description: Opinionated Node.js framework with decorators, DI, and class-based patterns.
+tags:
+  - typescript
+  - backend

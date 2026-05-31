@@ -1,0 +1,7 @@
+id: joi
+type: technology
+name: Joi
+description: Object schema validation for JavaScript, common in Express-era Node apps.
+tags:
+  - javascript
+  - node

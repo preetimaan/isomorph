@@ -1,0 +1,7 @@
+id: serialization
+type: responsibility
+name: Serialization
+description: Converting structured data to and from wire formats such as JSON.
+tags:
+  - cross-cutting
+  - data-transform

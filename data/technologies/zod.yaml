@@ -1,0 +1,8 @@
+id: zod
+type: technology
+name: Zod
+description: TypeScript-first schema validation with static type inference.
+tags:
+  - typescript
+  - javascript
+maturity: learning

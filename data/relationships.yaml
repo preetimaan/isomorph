@@ -1,0 +1,79 @@
+relationships:
+  # fulfills: technology -> responsibility
+  - from: pydantic
+    to: validation
+    type: fulfills
+  - from: pydantic
+    to: serialization
+    type: fulfills
+  - from: zod
+    to: validation
+    type: fulfills
+  - from: joi
+    to: validation
+    type: fulfills
+  - from: marshmallow
+    to: validation
+    type: fulfills
+  - from: marshmallow
+    to: serialization
+    type: fulfills
+  - from: class-validator
+    to: validation
+    type: fulfills
+
+  # alternative_to: stored once, from < to alphabetically
+  - from: class-validator
+    to: joi
+    type: alternative_to
+  - from: class-validator
+    to: marshmallow
+    type: alternative_to
+    notes: Different languages, similar boundary-validation role.
+  - from: class-validator
+    to: pydantic
+    type: alternative_to
+    notes: Different languages, similar boundary-validation role.
+  - from: class-validator
+    to: zod
+    type: alternative_to
+  - from: joi
+    to: marshmallow
+    type: alternative_to
+    notes: Different languages, similar boundary-validation role.
+  - from: joi
+    to: pydantic
+    type: alternative_to
+    notes: Different languages, similar boundary-validation role.
+  - from: joi
+    to: zod
+    type: alternative_to
+  - from: marshmallow
+    to: pydantic
+    type: alternative_to
+    notes: Different languages, similar boundary-validation role.
+  - from: marshmallow
+    to: zod
+    type: alternative_to
+    notes: Different languages, similar boundary-validation role.
+  - from: pydantic
+    to: zod
+    type: alternative_to
+    notes: Python type hints vs TypeScript-first inference.
+
+  # belongs_to: technology -> ecosystem
+  - from: pydantic
+    to: fastapi
+    type: belongs_to
+  - from: marshmallow
+    to: django
+    type: belongs_to
+  - from: joi
+    to: node
+    type: belongs_to
+  - from: zod
+    to: node
+    type: belongs_to
+  - from: class-validator
+    to: nestjs
+    type: belongs_to

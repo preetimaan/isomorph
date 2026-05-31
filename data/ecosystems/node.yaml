@@ -1,0 +1,7 @@
+id: node
+type: ecosystem
+name: Node.js Ecosystem
+description: JavaScript runtime ecosystem spanning Express, Fastify, and modern TS stacks.
+tags:
+  - javascript
+  - backend
