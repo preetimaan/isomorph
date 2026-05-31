@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { nodeRoute, searchNodes } from "@/graph";
+import { createFuzzyNodeSearch, nodeRoute } from "@/graph";
 import type { GraphData } from "@/graph";
 import { NodeLink } from "./NodeLink";
 
@@ -12,10 +12,11 @@ interface SearchBarProps {
 export function SearchBar({ graph, limit = 12 }: SearchBarProps) {
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
+  const search = useMemo(() => createFuzzyNodeSearch(graph), [graph]);
 
   const results = useMemo(
-    () => searchNodes(graph, query).slice(0, limit),
-    [graph, limit, query],
+    () => search(query, limit),
+    [limit, query, search],
   );
 
   return (

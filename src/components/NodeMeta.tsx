@@ -2,14 +2,22 @@ import type { GraphNode } from "@/graph";
 
 interface NodeMetaProps {
   node: GraphNode;
+  showMaturity?: boolean;
+  showNotes?: boolean;
+  showSources?: boolean;
 }
 
-export function NodeMeta({ node }: NodeMetaProps) {
+export function NodeMeta({
+  node,
+  showMaturity = true,
+  showNotes = true,
+  showSources = true,
+}: NodeMetaProps) {
   return (
     <div className="node-meta">
       <div className="node-meta-header">
         <span className="node-type">{node.type}</span>
-        {node.maturity ? (
+        {showMaturity && node.maturity ? (
           <span className={`maturity maturity-${node.maturity}`}>
             {node.maturity}
           </span>
@@ -27,13 +35,13 @@ export function NodeMeta({ node }: NodeMetaProps) {
           ))}
         </ul>
       ) : null}
-      {node.notes ? (
+      {showNotes && node.notes ? (
         <div className="note-block">
           <h3>Notes</h3>
           <p>{node.notes}</p>
         </div>
       ) : null}
-      {node.sources?.length ? (
+      {showSources && node.sources?.length ? (
         <div className="note-block">
           <h3>Sources</h3>
           <ul className="source-list">

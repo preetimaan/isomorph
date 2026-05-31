@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import type { ReactNode } from "react";
+import { SiteNav } from "./SiteNav";
 
 export function Layout({ children }: { children: ReactNode }) {
   return (
@@ -10,6 +11,7 @@ export function Layout({ children }: { children: ReactNode }) {
           <h1>Isomorph</h1>
           <p className="subtitle">Map tools to responsibilities, not syntax.</p>
         </Link>
+        <SiteNav />
       </header>
       <main>{children}</main>
     </div>

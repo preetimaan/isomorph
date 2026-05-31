@@ -1,5 +1,6 @@
 import { Layout } from "@/components/Layout";
 import { NodeLink } from "@/components/NodeLink";
+import { RelationshipGuide } from "@/components/RelationshipGuide";
 import { SearchBar } from "@/components/SearchBar";
 import { useGraph } from "@/context/useGraph";
 import { getNodesByType } from "@/graph";
@@ -31,6 +32,8 @@ export function HomePage() {
       <BrowseSection title="Responsibilities" nodes={responsibilities} />
       <BrowseSection title="Technologies" nodes={technologies} />
       <BrowseSection title="Ecosystems" nodes={ecosystems} />
+
+      <RelationshipGuide compact />
     </Layout>
   );
 }

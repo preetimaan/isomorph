@@ -21,6 +21,14 @@ yarn dev        # start UI at http://localhost:5173
 yarn build      # validate + production build
 ```
 
+## App pages
+
+- `/` Home (search + browse lists)
+- `/graph` Graph explorer (filters + click-through)
+- `/compare` Compare two technologies
+- `/relationships` Relationship types guide
+- `/technology/:id`, `/responsibility/:id`, `/ecosystem/:id` Node detail pages
+
 ## Project structure
 
 ```
@@ -47,7 +55,6 @@ Relationship types:
 | `commonly_paired` | technology → technology | — |
 | `belongs_to` | technology → ecosystem | pydantic → fastapi |
 | `depends_on` | technology → technology | — |
-| `replaces` | technology → technology | migration path |
 
 Store `alternative_to` once with `from` alphabetically before `to`.
 
@@ -58,6 +65,11 @@ Store `alternative_to` once with `from` alphabetically before `to`.
 3. Run `yarn validate`
 
 See [docs/DATA.md](docs/DATA.md) for file templates.
+
+## Dev notes
+
+- Edits to `src/` hot-reload via Vite.
+- Graph YAML edits under `data/` are picked up automatically during `yarn dev` (the graph reloads in dev).
 
 ## Scripts
 

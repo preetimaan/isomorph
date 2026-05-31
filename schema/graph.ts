@@ -383,3 +383,261 @@ export function getTechnologiesForEcosystem(
     )
     .sort((a, b) => a.name.localeCompare(b.name));
 }
+
+export function getResponsibilitiesForTechnology(
+  graph: GraphData,
+  technologyId: string,
+): GraphNode[] {
+  const responsibilityIds = graph.edges
+    .filter(
+      (edge) => edge.type === "fulfills" && edge.from === technologyId,
+    )
+    .map((edge) => edge.to);
+
+  return graph.nodes
+    .filter(
+      (node) =>
+        node.type === "responsibility" &&
+        responsibilityIds.includes(node.id),
+    )
+    .sort((a, b) => a.name.localeCompare(b.name));
+}
+
+export function getEcosystemsForTechnology(
+  graph: GraphData,
+  technologyId: string,
+): GraphNode[] {
+  const ecosystemIds = graph.edges
+    .filter(
+      (edge) => edge.type === "belongs_to" && edge.from === technologyId,
+    )
+    .map((edge) => edge.to);
+
+  return graph.nodes
+    .filter(
+      (node) => node.type === "ecosystem" && ecosystemIds.includes(node.id),
+    )
+    .sort((a, b) => a.name.localeCompare(b.name));
+}
+
+export interface GraphSubgraph {
+  nodes: GraphNode[];
+  edges: GraphEdge[];
+}
+
+export interface TechnologyComparison {
+  left: GraphNode;
+  right: GraphNode;
+  sharedResponsibilities: GraphNode[];
+  leftOnlyResponsibilities: GraphNode[];
+  rightOnlyResponsibilities: GraphNode[];
+  areAlternatives: boolean;
+}
+
+export interface MigrationPath {
+  direction: "replaces" | "replaced_by";
+  nodes: GraphNode[];
+}
+
+function getFulfilledResponsibilityIds(
+  graph: GraphData,
+  technologyId: string,
+): Set<string> {
+  return new Set(
+    graph.edges
+      .filter(
+        (edge) => edge.type === "fulfills" && edge.from === technologyId,
+      )
+      .map((edge) => edge.to),
+  );
+}
+
+function nodesByIds(graph: GraphData, ids: Iterable<string>): GraphNode[] {
+  const idSet = ids instanceof Set ? ids : new Set(ids);
+  return graph.nodes.filter((node) => idSet.has(node.id));
+}
+
+export function compareTechnologies(
+  graph: GraphData,
+  leftId: string,
+  rightId: string,
+): TechnologyComparison | null {
+  const left = getNode(graph, leftId);
+  const right = getNode(graph, rightId);
+
+  if (!left || !right || left.type !== "technology" || right.type !== "technology") {
+    return null;
+  }
+
+  const leftResponsibilities = getFulfilledResponsibilityIds(graph, leftId);
+  const rightResponsibilities = getFulfilledResponsibilityIds(graph, rightId);
+
+  const sharedIds = [...leftResponsibilities].filter((id) =>
+    rightResponsibilities.has(id),
+  );
+  const leftOnlyIds = [...leftResponsibilities].filter(
+    (id) => !rightResponsibilities.has(id),
+  );
+  const rightOnlyIds = [...rightResponsibilities].filter(
+    (id) => !leftResponsibilities.has(id),
+  );
+
+  const areAlternatives = graph.edges.some(
+    (edge) =>
+      edge.type === "alternative_to" &&
+      ((edge.from === leftId && edge.to === rightId) ||
+        (edge.from === rightId && edge.to === leftId)),
+  );
+
+  return {
+    left,
+    right,
+    sharedResponsibilities: nodesByIds(graph, sharedIds).sort((a, b) =>
+      a.name.localeCompare(b.name),
+    ),
+    leftOnlyResponsibilities: nodesByIds(graph, leftOnlyIds).sort((a, b) =>
+      a.name.localeCompare(b.name),
+    ),
+    rightOnlyResponsibilities: nodesByIds(graph, rightOnlyIds).sort((a, b) =>
+      a.name.localeCompare(b.name),
+    ),
+    areAlternatives,
+  };
+}
+
+export function getEcosystemSubgraph(
+  graph: GraphData,
+  ecosystemId: string,
+): GraphSubgraph {
+  const technologies = getTechnologiesForEcosystem(graph, ecosystemId);
+  const nodeIds = new Set<string>([ecosystemId, ...technologies.map((t) => t.id)]);
+
+  for (const edge of graph.edges) {
+    if (edge.type === "fulfills" && nodeIds.has(edge.from)) {
+      nodeIds.add(edge.to);
+    }
+    if (edge.type === "belongs_to" && edge.to === ecosystemId) {
+      nodeIds.add(edge.from);
+    }
+  }
+
+  const nodes = graph.nodes.filter((node) => nodeIds.has(node.id));
+  const edges = graph.edges.filter(
+    (edge) => nodeIds.has(edge.from) && nodeIds.has(edge.to),
+  );
+
+  return { nodes, edges };
+}
+
+export function getFilteredSubgraph(
+  graph: GraphData,
+  options: {
+    nodeTypes: NodeType[];
+    edgeTypes: RelationshipType[];
+  },
+): GraphSubgraph {
+  const { nodeTypes, edgeTypes } = options;
+
+  if (nodeTypes.length === 0) {
+    return { nodes: [], edges: [] };
+  }
+
+  const nodes = graph.nodes.filter((node) => nodeTypes.includes(node.type));
+  const nodeIds = new Set(nodes.map((node) => node.id));
+
+  const edges =
+    edgeTypes.length === 0
+      ? []
+      : graph.edges.filter(
+          (edge) =>
+            edgeTypes.includes(edge.type) &&
+            nodeIds.has(edge.from) &&
+            nodeIds.has(edge.to),
+        );
+
+  return { nodes, edges };
+}
+
+function followReplacementChain(
+  graph: GraphData,
+  startId: string,
+  direction: "replaces" | "replaced_by",
+): GraphNode[] {
+  const chain: GraphNode[] = [];
+  const start = getNode(graph, startId);
+  if (!start || start.type !== "technology") {
+    return chain;
+  }
+
+  chain.push(start);
+  const visited = new Set<string>([startId]);
+  let currentId: string | undefined = startId;
+
+  while (currentId) {
+    const activeId = currentId;
+    const nextEdge = graph.edges.find((edge) => {
+      if (edge.type !== "replaces") {
+        return false;
+      }
+      if (direction === "replaces") {
+        return edge.from === activeId;
+      }
+      return edge.to === activeId;
+    });
+
+    if (!nextEdge) {
+      break;
+    }
+
+    const nextId =
+      direction === "replaces" ? nextEdge.to : nextEdge.from;
+    if (visited.has(nextId)) {
+      break;
+    }
+
+    const nextNode = getNode(graph, nextId);
+    if (!nextNode) {
+      break;
+    }
+
+    chain.push(nextNode);
+    visited.add(nextId);
+    currentId = nextId;
+  }
+
+  return chain;
+}
+
+export function getMigrationPaths(
+  graph: GraphData,
+  technologyId: string,
+): MigrationPath[] {
+  const replaces = followReplacementChain(graph, technologyId, "replaces");
+  const replacedBy = followReplacementChain(graph, technologyId, "replaced_by");
+
+  const paths: MigrationPath[] = [];
+
+  if (replaces.length > 1) {
+    paths.push({ direction: "replaces", nodes: replaces });
+  }
+  if (replacedBy.length > 1) {
+    paths.push({ direction: "replaced_by", nodes: replacedBy });
+  }
+
+  return paths;
+}
+
+export function getAlternativeEdgeNotes(
+  graph: GraphData,
+  leftId: string,
+  rightId: string,
+): string | undefined {
+  const edge = graph.edges.find(
+    (item) =>
+      item.type === "alternative_to" &&
+      ((item.from === leftId && item.to === rightId) ||
+        (item.from === rightId && item.to === leftId)),
+  );
+
+  return edge?.notes;
+}

@@ -202,6 +202,13 @@ h1 {
   border-bottom: 1px solid #2d3142;
 }
 
+.relationship-list li.highlight {
+  background: rgba(138, 180, 248, 0.08);
+  border-radius: 8px;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
 .relationship-list li:last-child,
 .browse-list li:last-child {
   border-bottom: none;
@@ -292,9 +299,281 @@ input[type="search"] {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.site-nav-link {
+  color: #8ab4f8;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.site-nav-link:hover {
+  text-decoration: underline;
+}
+
+.action-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.action-link {
+  display: inline-block;
+  padding: 0.55rem 0.9rem;
+  border-radius: 8px;
+  background: #22263a;
+  color: #8ab4f8;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.action-link:hover {
+  background: #2d3142;
+}
+
+.compare-selectors {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.compare-selectors label {
+  display: grid;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #9aa0a6;
+}
+
+.compare-selectors select {
+  padding: 0.65rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #2d3142;
+  background: #0f1117;
+  color: inherit;
+  font: inherit;
+}
+
+.compare-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.compare-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.compare-column h3 {
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+  color: #9aa0a6;
+}
+
+.compare-column .text-link {
+  display: inline-block;
+  margin-top: 0.75rem;
+}
+
+.stack-section .panel {
+  margin-bottom: 0;
+}
+
+.detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.section-header h2 {
+  margin: 0 0 0.35rem;
+}
+
+.relationship-guide {
+  display: grid;
+  gap: 1rem;
+}
+
+.relationship-guide-item {
+  padding: 1rem;
+  border: 1px solid #2d3142;
+  border-radius: 10px;
+  background: #0f1117;
+}
+
+.relationship-guide-item h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.relationship-guide-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.relationship-badge {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  background: #22263a;
+  color: #9aa0a6;
+}
+
+.relationship-badge-symmetric {
+  color: #81c995;
+}
+
+.relationship-badge-directed {
+  color: #8ab4f8;
+}
+
+.compare-header h3 {
+  margin: 0 0 0.35rem;
+}
+
+.alternatives-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.alternative-card {
+  padding: 1rem;
+  border: 1px solid #2d3142;
+  border-radius: 10px;
+  background: #0f1117;
+}
+
+.migration-path + .migration-path {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #2d3142;
+}
+
+.migration-chain {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.migration-chain li {
+  padding: 0.35rem 0;
+}
+
+.graph-panel {
+  overflow: hidden;
+}
+
+.graph-canvas {
+  position: relative;
+  width: 100%;
+  border: 1px solid #2d3142;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #0f1117;
+}
+
+.graph-legend {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0.5rem 0.65rem;
+  list-style: none;
+  border-radius: 8px;
+  background: rgba(15, 17, 23, 0.88);
+  font-size: 0.75rem;
+  color: #9aa0a6;
+}
+
+.graph-legend li {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.legend-swatch {
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 999px;
+}
+
+.legend-swatch.responsibility {
+  background: #8ab4f8;
+}
+
+.legend-swatch.technology {
+  background: #81c995;
+}
+
+.legend-swatch.ecosystem {
+  background: #c58af9;
+}
+
+.filter-group + .filter-group {
+  margin-top: 1rem;
+}
+
+.filter-group h3 {
+  margin: 0 0 0.5rem;
+  font-size: 0.9rem;
+  color: #9aa0a6;
+}
+
+.filter-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  background: #22263a;
+  font-size: 0.8rem;
+  color: #c4c7c5;
+}
+
 @media (max-width: 640px) {
   .results li {
     grid-template-columns: 1fr;
     gap: 0.25rem;
+  }
+
+  .compare-header {
+    grid-template-columns: 1fr;
+  }
+
+  .compare-selectors {
+    grid-template-columns: 1fr;
+  }
+
+  .compare-columns {
+    grid-template-columns: 1fr;
   }
 }

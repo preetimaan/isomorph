@@ -1,3 +1,4 @@
+import { SYMMETRIC_RELATIONSHIP_TYPES } from "@/content/relationships";
 import type { GraphNode, RelatedEdge, RelationshipType } from "@/graph";
 import { NodeLink } from "./NodeLink";
 
@@ -10,8 +11,8 @@ const RELATIONSHIP_LABELS: Record<
     incoming: "Implemented by",
   },
   alternative_to: {
-    outgoing: "Alternative to",
-    incoming: "Alternative to",
+    outgoing: "Alternatives",
+    incoming: "Alternatives",
   },
   commonly_paired: {
     outgoing: "Commonly paired with",
@@ -68,6 +69,15 @@ export function RelationshipSections({
 }: {
   edges: RelatedEdge[];
 }) {
+  const relationshipOrder: RelationshipType[] = [
+    "fulfills",
+    "belongs_to",
+    "alternative_to",
+    "commonly_paired",
+    "depends_on",
+    "replaces",
+  ];
+
   const byType = new Map<RelationshipType, RelatedEdge[]>();
 
   for (const edge of edges) {
@@ -76,18 +86,40 @@ export function RelationshipSections({
     byType.set(edge.edge.type, existing);
   }
 
-  const sections = Array.from(byType.entries()).map(([type, typeEdges]) => {
-    const labels = RELATIONSHIP_LABELS[type];
-    const { outgoing, incoming } = groupEdges(typeEdges);
+  const sections = relationshipOrder
+    .filter((type) => byType.has(type))
+    .map((type) => {
+      const typeEdges = byType.get(type);
+      if (!typeEdges) {
+        return null;
+      }
 
-    return (
-      <section key={type} className="panel">
-        <h2>{type.replaceAll("_", " ")}</h2>
-        <EdgeList label={labels.outgoing} edges={outgoing} />
-        <EdgeList label={labels.incoming} edges={incoming} />
-      </section>
-    );
-  });
+      const labels = RELATIONSHIP_LABELS[type];
+      const isSymmetric = SYMMETRIC_RELATIONSHIP_TYPES.includes(type);
+
+      if (isSymmetric) {
+        return (
+          <section key={type} className="panel">
+            <h2>{type.replaceAll("_", " ")}</h2>
+            <p className="edge-note">
+              Bidirectional — stored once in data, but applies both ways.
+            </p>
+            <EdgeList label={labels.outgoing} edges={typeEdges} />
+          </section>
+        );
+      }
+
+      const { outgoing, incoming } = groupEdges(typeEdges);
+
+      return (
+        <section key={type} className="panel">
+          <h2>{type.replaceAll("_", " ")}</h2>
+          <EdgeList label={labels.outgoing} edges={outgoing} />
+          <EdgeList label={labels.incoming} edges={incoming} />
+        </section>
+      );
+    })
+    .filter((section): section is JSX.Element => section !== null);
 
   if (!sections.length) {
     return (
@@ -108,7 +140,12 @@ export function NodeListSection({
   nodes: GraphNode[];
 }) {
   if (!nodes.length) {
-    return null;
+    return (
+      <section className="panel">
+        <h2>{title}</h2>
+        <p className="empty-state">Nothing recorded yet.</p>
+      </section>
+    );
   }
 
   return (
