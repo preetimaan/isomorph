@@ -322,3 +322,64 @@ export function searchNodes(graph: GraphData, query: string): GraphNode[] {
     return haystack.includes(normalized);
   });
 }
+
+export function nodeRoute(node: Pick<GraphNode, "type" | "id">): string {
+  return `/${node.type}/${node.id}`;
+}
+
+export interface RelatedEdge {
+  edge: GraphEdge;
+  relatedNode: GraphNode;
+  direction: "outgoing" | "incoming";
+}
+
+export function getRelatedEdges(
+  graph: GraphData,
+  nodeId: string,
+): RelatedEdge[] {
+  const related: RelatedEdge[] = [];
+
+  for (const edge of graph.edges) {
+    if (edge.from === nodeId) {
+      const relatedNode = getNode(graph, edge.to);
+      if (relatedNode) {
+        related.push({ edge, relatedNode, direction: "outgoing" });
+      }
+    }
+
+    if (edge.to === nodeId && edge.from !== nodeId) {
+      const relatedNode = getNode(graph, edge.from);
+      if (relatedNode) {
+        related.push({ edge, relatedNode, direction: "incoming" });
+      }
+    }
+  }
+
+  return related;
+}
+
+export function getNodesByType(
+  graph: GraphData,
+  type: NodeType,
+): GraphNode[] {
+  return graph.nodes
+    .filter((node) => node.type === type)
+    .sort((a, b) => a.name.localeCompare(b.name));
+}
+
+export function getTechnologiesForEcosystem(
+  graph: GraphData,
+  ecosystemId: string,
+): GraphNode[] {
+  const technologyIds = graph.edges
+    .filter(
+      (edge) => edge.type === "belongs_to" && edge.to === ecosystemId,
+    )
+    .map((edge) => edge.from);
+
+  return graph.nodes
+    .filter(
+      (node) => node.type === "technology" && technologyIds.includes(node.id),
+    )
+    .sort((a, b) => a.name.localeCompare(b.name));
+}
