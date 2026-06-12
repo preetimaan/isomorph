@@ -1,0 +1,8 @@
+id: redis
+type: technology
+name: Redis
+description: In-memory data store used for caching, sessions, and as a message broker.
+tags:
+  - cache
+  - broker
+  - cross-stack

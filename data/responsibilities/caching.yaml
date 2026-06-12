@@ -1,0 +1,8 @@
+id: caching
+type: responsibility
+name: Caching
+description: Storing computed or fetched data for faster reuse and reduced load.
+tags:
+  - performance
+  - backend
+  - cross-cutting

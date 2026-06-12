@@ -1,0 +1,8 @@
+id: django-rest-framework
+type: technology
+name: Django REST Framework
+description: Toolkit for building Web APIs on Django — serializers, viewsets, routers, and auth.
+tags:
+  - python
+  - api
+  - rest

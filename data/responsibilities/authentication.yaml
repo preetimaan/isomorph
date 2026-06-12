@@ -1,0 +1,8 @@
+id: authentication
+type: responsibility
+name: Authentication
+description: Verifying identity — who is making the request (AuthN).
+tags:
+  - security
+  - backend
+  - cross-cutting

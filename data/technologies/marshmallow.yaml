@@ -1,6 +1,6 @@
 id: marshmallow
 type: technology
 name: Marshmallow
-description: Python object serialization and validation library, often paired with Flask.
+description: Python object serialization and validation library, often paired with Django or Flask APIs.
 tags:
   - python

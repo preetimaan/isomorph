@@ -1,0 +1,8 @@
+id: celery
+type: technology
+name: Celery
+description: Distributed task queue for running async and scheduled work outside the request cycle.
+tags:
+  - python
+  - async
+  - tasks

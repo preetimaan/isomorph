@@ -1,0 +1,8 @@
+id: state-management
+type: responsibility
+name: State Management
+description: Holding and updating application state on the client — UI data flow and shared stores.
+tags:
+  - frontend
+  - client
+  - ui

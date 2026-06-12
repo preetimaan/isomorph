@@ -1,0 +1,8 @@
+id: message-queue
+type: responsibility
+name: Message Queue
+description: Decoupling producers and consumers via durable or in-memory message passing.
+tags:
+  - async
+  - backend
+  - infrastructure

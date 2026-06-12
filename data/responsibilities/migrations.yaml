@@ -1,0 +1,8 @@
+id: migrations
+type: responsibility
+name: Migrations
+description: Evolving database schema over time in a versioned, repeatable way.
+tags:
+  - data
+  - backend
+  - persistence

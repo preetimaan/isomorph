@@ -1,0 +1,8 @@
+id: django-framework
+type: technology
+name: Django
+description: Batteries-included Python web framework with built-in ORM, routing, auth, and admin.
+tags:
+  - python
+  - backend
+  - full-stack

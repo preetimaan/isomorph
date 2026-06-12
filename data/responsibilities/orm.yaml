@@ -1,0 +1,8 @@
+id: orm
+type: responsibility
+name: ORM
+description: Mapping objects to relational data and expressing database queries in application code.
+tags:
+  - data
+  - backend
+  - persistence

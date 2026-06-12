@@ -21,6 +21,45 @@ relationships:
   - from: class-validator
     to: validation
     type: fulfills
+  - from: django-framework
+    to: routing
+    type: fulfills
+  - from: django-framework
+    to: orm
+    type: fulfills
+  - from: django-framework
+    to: migrations
+    type: fulfills
+  - from: django-framework
+    to: authentication
+    type: fulfills
+  - from: django-framework
+    to: authorization
+    type: fulfills
+  - from: django-framework
+    to: logging
+    type: fulfills
+  - from: django-rest-framework
+    to: routing
+    type: fulfills
+  - from: django-rest-framework
+    to: serialization
+    type: fulfills
+  - from: django-rest-framework
+    to: validation
+    type: fulfills
+  - from: django-rest-framework
+    to: authentication
+    type: fulfills
+  - from: celery
+    to: background-jobs
+    type: fulfills
+  - from: redis
+    to: caching
+    type: fulfills
+  - from: redis
+    to: message-queue
+    type: fulfills
 
   # alternative_to: stored once, from < to alphabetically
   - from: class-validator
@@ -60,12 +99,28 @@ relationships:
     to: zod
     type: alternative_to
     notes: Python type hints vs TypeScript-first inference.
+  - from: django-rest-framework
+    to: marshmallow
+    type: alternative_to
+    notes: Standalone schemas vs DRF serializers for API boundaries.
 
   # belongs_to: technology -> ecosystem
   - from: pydantic
     to: fastapi
     type: belongs_to
+  - from: celery
+    to: django
+    type: belongs_to
+  - from: django-framework
+    to: django
+    type: belongs_to
+  - from: django-rest-framework
+    to: django
+    type: belongs_to
   - from: marshmallow
+    to: django
+    type: belongs_to
+  - from: redis
     to: django
     type: belongs_to
   - from: joi
@@ -77,3 +132,24 @@ relationships:
   - from: class-validator
     to: nestjs
     type: belongs_to
+
+  # commonly_paired: technology -> technology
+  - from: celery
+    to: redis
+    type: commonly_paired
+    notes: Redis is a common Celery broker and result backend.
+  - from: django-framework
+    to: celery
+    type: commonly_paired
+  - from: django-framework
+    to: django-rest-framework
+    type: commonly_paired
+  - from: django-rest-framework
+    to: marshmallow
+    type: commonly_paired
+    notes: Marshmallow for schemas when not using DRF serializers.
+
+  # depends_on: technology -> technology
+  - from: django-rest-framework
+    to: django-framework
+    type: depends_on

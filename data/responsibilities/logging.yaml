@@ -1,0 +1,8 @@
+id: logging
+type: responsibility
+name: Logging
+description: Recording runtime events and errors for debugging, auditing, and observability.
+tags:
+  - observability
+  - backend
+  - cross-cutting

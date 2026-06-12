@@ -1,0 +1,8 @@
+id: authorization
+type: responsibility
+name: Authorization
+description: Enforcing access rules — what an authenticated identity may do (AuthZ).
+tags:
+  - security
+  - backend
+  - cross-cutting

@@ -1,0 +1,8 @@
+id: routing
+type: responsibility
+name: Routing
+description: Matching incoming requests to handlers and dispatching to the right code path.
+tags:
+  - api
+  - backend
+  - http

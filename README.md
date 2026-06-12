@@ -29,6 +29,11 @@ yarn build      # validate + production build
 - `/relationships` Relationship types guide
 - `/technology/:id`, `/responsibility/:id`, `/ecosystem/:id` Node detail pages
 
+## Docs
+
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — system design, data model, build pipeline
+- [`docs/DATA.md`](docs/DATA.md) — YAML authoring guide
+
 ## Project structure
 
 ```

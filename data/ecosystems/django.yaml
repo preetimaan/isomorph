@@ -1,7 +1,7 @@
 id: django
 type: ecosystem
 name: Django Ecosystem
-description: Batteries-included Python web framework with ORM, admin, and DRF.
+description: Python web stack centered on Django — DRF, Celery, Redis, and Marshmallow.
 tags:
   - python
   - backend
