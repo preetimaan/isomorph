@@ -1,0 +1,15 @@
+# Personal knowledge — synced from portfolio on load when this file changes.
+# Sources: experience.json (Django, NodeJS, TypeScript) + mail-mind (FastAPI/Pydantic)
+
+known:
+  - django-framework
+  - django-rest-framework
+  - pydantic
+  - celery
+  - sqlalchemy
+  - postgres
+  - redis
+  - rabbitmq
+  - nodejs
+  - express
+  - fastapi

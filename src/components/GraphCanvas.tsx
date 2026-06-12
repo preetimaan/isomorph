@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ForceGraph2D from "react-force-graph-2d";
+import { useKnownTechnologies } from "@/context/useKnownTechnologies";
 import { nodeRoute } from "@/graph";
 import type { GraphNode, GraphSubgraph, NodeType } from "@/graph";
 import type { ForceGraphMethods } from "react-force-graph-2d";
@@ -10,6 +11,8 @@ const NODE_COLORS: Record<NodeType, string> = {
   technology: "#81c995",
   ecosystem: "#c58af9",
 };
+
+const TECHNOLOGY_COLOR_UNKNOWN = "#4f6f59";
 
 interface ForceNode extends GraphNode {
   x?: number;
@@ -91,6 +94,7 @@ export function GraphCanvas({ subgraph, height = 420 }: GraphCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const width = useContainerWidth(containerRef);
   const navigate = useNavigate();
+  const { isKnown } = useKnownTechnologies();
   const graphRef = useRef<ForceGraphMethods | undefined>();
 
   const graphData = useMemo(
@@ -134,9 +138,15 @@ export function GraphCanvas({ subgraph, height = 420 }: GraphCanvasProps) {
         graphData={graphData}
         nodeLabel="name"
         nodeRelSize={6}
-        nodeColor={(node) =>
-          NODE_COLORS[(node as ForceNode).type] ?? "#9aa0a6"
-        }
+        nodeColor={(node) => {
+          const forceNode = node as ForceNode;
+          if (forceNode.type === "technology") {
+            return isKnown(forceNode.id)
+              ? NODE_COLORS.technology
+              : TECHNOLOGY_COLOR_UNKNOWN;
+          }
+          return NODE_COLORS[forceNode.type] ?? "#9aa0a6";
+        }}
         nodeCanvasObjectMode={() => "after"}
         nodeCanvasObject={(node, ctx, globalScale) => {
           const forceNode = node as ForceNode;
@@ -149,7 +159,10 @@ export function GraphCanvas({ subgraph, height = 420 }: GraphCanvasProps) {
           ctx.font = `${fontSize}px Inter, system-ui, sans-serif`;
           ctx.textAlign = "center";
           ctx.textBaseline = "top";
-          ctx.fillStyle = "#e8eaed";
+          ctx.fillStyle =
+            forceNode.type === "technology" && !isKnown(forceNode.id)
+              ? "#8a9099"
+              : "#e8eaed";
           ctx.fillText(label, forceNode.x, forceNode.y + 10);
         }}
         linkColor={() => "#3c4257"}
@@ -203,7 +216,11 @@ export function GraphCanvas({ subgraph, height = 420 }: GraphCanvasProps) {
         </li>
         <li>
           <span className="legend-swatch technology" />
-          technology
+          technology (known)
+        </li>
+        <li>
+          <span className="legend-swatch technology-unknown" />
+          technology (unknown)
         </li>
         <li>
           <span className="legend-swatch ecosystem" />

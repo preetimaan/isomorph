@@ -25,8 +25,6 @@ export function GraphProvider({ children }: { children: ReactNode }) {
       setValue({ graph, validation: validateGraphData(graph) });
     };
 
-    // `loadGraph` depends on `import.meta.glob('../../data/**/*.yaml?raw')`.
-    // When YAML files change, Vite should trigger an update that re-runs this accept.
     import.meta.hot.accept(["@/graph/loadGraph", "@/graph"], reload);
   }, []);
 

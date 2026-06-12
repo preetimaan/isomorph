@@ -5,6 +5,7 @@ import { Layout } from "@/components/Layout";
 import { NodeMeta } from "@/components/NodeMeta";
 import { NodeListSection, RelationshipSections } from "@/components/RelationshipSection";
 import { useGraph } from "@/context/useGraph";
+import { useKnownTechnologies } from "@/context/useKnownTechnologies";
 import {
   getEcosystemSubgraph,
   getEcosystemsForTechnology,
@@ -22,6 +23,7 @@ interface NodeDetailPageProps {
 
 export function NodeDetailPage({ nodeType, id }: NodeDetailPageProps) {
   const { graph } = useGraph();
+  const { isKnown } = useKnownTechnologies();
   const node = getNode(graph, id);
 
   if (!node || node.type !== nodeType) {
@@ -64,7 +66,11 @@ export function NodeDetailPage({ nodeType, id }: NodeDetailPageProps) {
       </nav>
 
       <section className="panel">
-        <NodeMeta node={node} />
+        <NodeMeta
+          node={node}
+          showMaturity={node.type !== "technology"}
+          known={node.type === "technology" ? isKnown(node.id) : undefined}
+        />
       </section>
 
       {node.type === "technology" ? (

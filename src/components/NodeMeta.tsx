@@ -5,6 +5,7 @@ interface NodeMetaProps {
   showMaturity?: boolean;
   showNotes?: boolean;
   showSources?: boolean;
+  known?: boolean;
 }
 
 export function NodeMeta({
@@ -12,11 +13,23 @@ export function NodeMeta({
   showMaturity = true,
   showNotes = true,
   showSources = true,
+  known,
 }: NodeMetaProps) {
   return (
-    <div className="node-meta">
+    <div
+      className={
+        node.type === "technology" && known !== undefined
+          ? known
+            ? "node-meta node-meta--technology-known"
+            : "node-meta node-meta--technology-unknown"
+          : "node-meta"
+      }
+    >
       <div className="node-meta-header">
-        <span className="node-type">{node.type}</span>
+        <span className={`node-type node-type-${node.type}`}>{node.type}</span>
+        {node.type === "technology" && known ? (
+          <span className="known-marker known-marker-label">known</span>
+        ) : null}
         {showMaturity && node.maturity ? (
           <span className={`maturity maturity-${node.maturity}`}>
             {node.maturity}
