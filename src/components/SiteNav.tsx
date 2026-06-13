@@ -4,7 +4,7 @@ export function SiteNav() {
   return (
     <nav className="site-nav" aria-label="Main">
       <Link to="/" className="site-nav-link">
-        Home
+        Matrix
       </Link>
       <Link to="/graph" className="site-nav-link">
         Graph

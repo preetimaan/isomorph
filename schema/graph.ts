@@ -529,6 +529,134 @@ export function getEcosystemSubgraph(
   return { nodes, edges };
 }
 
+export function getResponsibilitySubgraph(
+  graph: GraphData,
+  responsibilityId: string,
+): GraphSubgraph {
+  const technologies = getTechnologiesForResponsibility(graph, responsibilityId);
+  const nodeIds = new Set<string>([
+    responsibilityId,
+    ...technologies.map((technology) => technology.id),
+  ]);
+
+  for (const technology of technologies) {
+    for (const edge of graph.edges) {
+      if (edge.type === "belongs_to" && edge.from === technology.id) {
+        nodeIds.add(edge.to);
+      }
+    }
+  }
+
+  const nodes = graph.nodes.filter((node) => nodeIds.has(node.id));
+  const edges = graph.edges.filter(
+    (edge) =>
+      nodeIds.has(edge.from) &&
+      nodeIds.has(edge.to) &&
+      (edge.type === "fulfills" ||
+        edge.type === "belongs_to" ||
+        edge.type === "alternative_to"),
+  );
+
+  return { nodes, edges };
+}
+
+export interface TechnologyMatrixRow {
+  technology: GraphNode;
+  ecosystems: GraphNode[];
+  responsibilityIds: Set<string>;
+}
+
+export interface TechnologyMatrix {
+  responsibilities: GraphNode[];
+  rows: TechnologyMatrixRow[];
+}
+
+export function buildTechnologyMatrix(graph: GraphData): TechnologyMatrix {
+  const responsibilities = getNodesByType(graph, "responsibility");
+  const technologies = getNodesByType(graph, "technology");
+
+  const rows = technologies.map((technology) => ({
+    technology,
+    ecosystems: getEcosystemsForTechnology(graph, technology.id),
+    responsibilityIds: getFulfilledResponsibilityIds(graph, technology.id),
+  }));
+
+  return { responsibilities, rows };
+}
+
+export interface EcosystemMatrixCoverage {
+  ecosystem: GraphNode;
+  rows: TechnologyMatrixRow[];
+  fulfilledResponsibilityIds: Set<string>;
+  unfulfilledResponsibilities: GraphNode[];
+}
+
+export function getEcosystemMatrixCoverage(
+  graph: GraphData,
+  ecosystemId: string,
+): EcosystemMatrixCoverage | null {
+  const ecosystem = getNode(graph, ecosystemId);
+  if (!ecosystem || ecosystem.type !== "ecosystem") {
+    return null;
+  }
+
+  const matrix = buildTechnologyMatrix(graph);
+  const rows = matrix.rows.filter((row) =>
+    row.ecosystems.some((item) => item.id === ecosystemId),
+  );
+
+  const fulfilledResponsibilityIds = new Set<string>();
+  for (const row of rows) {
+    for (const responsibilityId of row.responsibilityIds) {
+      fulfilledResponsibilityIds.add(responsibilityId);
+    }
+  }
+
+  const unfulfilledResponsibilities = matrix.responsibilities.filter(
+    (responsibility) => !fulfilledResponsibilityIds.has(responsibility.id),
+  );
+
+  return {
+    ecosystem,
+    rows,
+    fulfilledResponsibilityIds,
+    unfulfilledResponsibilities,
+  };
+}
+
+export interface MatrixEcosystemGroup {
+  ecosystem: GraphNode | null;
+  rows: TechnologyMatrixRow[];
+}
+
+export function groupMatrixRowsByEcosystem(
+  graph: GraphData,
+  rows: TechnologyMatrixRow[],
+): MatrixEcosystemGroup[] {
+  const ecosystems = getNodesByType(graph, "ecosystem");
+  const groups: MatrixEcosystemGroup[] = [];
+
+  for (const ecosystem of ecosystems) {
+    const ecosystemRows = rows
+      .filter((row) => row.ecosystems.some((item) => item.id === ecosystem.id))
+      .sort((a, b) => a.technology.name.localeCompare(b.technology.name));
+
+    if (ecosystemRows.length) {
+      groups.push({ ecosystem, rows: ecosystemRows });
+    }
+  }
+
+  const unassignedRows = rows
+    .filter((row) => row.ecosystems.length === 0)
+    .sort((a, b) => a.technology.name.localeCompare(b.technology.name));
+
+  if (unassignedRows.length) {
+    groups.push({ ecosystem: null, rows: unassignedRows });
+  }
+
+  return groups;
+}
+
 export function getFilteredSubgraph(
   graph: GraphData,
   options: {

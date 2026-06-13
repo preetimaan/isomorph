@@ -1,9 +1,11 @@
 export { loadGraph, loadGraphFromDisk } from "./loadGraph";
 export { createFuzzyNodeSearch } from "./fuzzySearch";
 export {
+  buildTechnologyMatrix,
   compareTechnologies,
   getAlternativeEdgeNotes,
   getAlternatives,
+  getEcosystemMatrixCoverage,
   getEcosystemSubgraph,
   getEcosystemsForTechnology,
   getFilteredSubgraph,
@@ -12,22 +14,28 @@ export {
   getNodesByType,
   getRelatedEdges,
   getResponsibilitiesForTechnology,
+  getResponsibilitySubgraph,
   getTechnologiesForEcosystem,
   getTechnologiesForResponsibility,
+  groupMatrixRowsByEcosystem,
   nodeRoute,
   searchNodes,
   validateGraphData,
 } from "@schema/graph";
 export type {
+  EcosystemMatrixCoverage,
   GraphData,
   GraphEdge,
   GraphNode,
   GraphSubgraph,
   GraphValidationResult,
   Maturity,
+  MatrixEcosystemGroup,
   MigrationPath,
   NodeType,
   RelatedEdge,
   RelationshipType,
   TechnologyComparison,
+  TechnologyMatrix,
+  TechnologyMatrixRow,
 } from "@schema/graph";

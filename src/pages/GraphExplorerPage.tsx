@@ -1,115 +1,142 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { Layout } from "@/components/Layout";
 import { GraphCanvas } from "@/components/GraphCanvas";
 import { useGraph } from "@/context/useGraph";
-import { getFilteredSubgraph, type NodeType, type RelationshipType } from "@/graph";
-
-const NODE_TYPE_OPTIONS: NodeType[] = [
-  "responsibility",
-  "technology",
-  "ecosystem",
-];
-
-const EDGE_TYPE_OPTIONS: RelationshipType[] = [
-  "fulfills",
-  "alternative_to",
-  "commonly_paired",
-  "belongs_to",
-  "depends_on",
-];
+import {
+  getEcosystemSubgraph,
+  getNode,
+  getNodesByType,
+  getResponsibilitySubgraph,
+} from "@/graph";
 
 export function GraphExplorerPage() {
   const { graph } = useGraph();
-  const [selectedNodeTypes, setSelectedNodeTypes] = useState<NodeType[]>([
-    ...NODE_TYPE_OPTIONS,
-  ]);
-  const [selectedEdgeTypes, setSelectedEdgeTypes] = useState<RelationshipType[]>([
-    ...EDGE_TYPE_OPTIONS,
-  ]);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const subgraph = useMemo(
-    () =>
-      getFilteredSubgraph(graph, {
-        nodeTypes: selectedNodeTypes,
-        edgeTypes: selectedEdgeTypes,
-      }),
-    [graph, selectedEdgeTypes, selectedNodeTypes],
-  );
+  const ecosystemId = searchParams.get("ecosystem") ?? "";
+  const responsibilityId = searchParams.get("responsibility") ?? "";
 
-  function toggleNodeType(type: NodeType) {
-    setSelectedNodeTypes((current) =>
-      current.includes(type)
-        ? current.filter((item) => item !== type)
-        : [...current, type],
-    );
+  const ecosystems = getNodesByType(graph, "ecosystem");
+  const responsibilities = getNodesByType(graph, "responsibility");
+
+  const scope = useMemo(() => {
+    if (ecosystemId && responsibilityId) {
+      return null;
+    }
+
+    if (ecosystemId) {
+      const ecosystem = getNode(graph, ecosystemId);
+      if (!ecosystem || ecosystem.type !== "ecosystem") {
+        return null;
+      }
+      return {
+        kind: "ecosystem" as const,
+        node: ecosystem,
+        subgraph: getEcosystemSubgraph(graph, ecosystemId),
+      };
+    }
+
+    if (responsibilityId) {
+      const responsibility = getNode(graph, responsibilityId);
+      if (!responsibility || responsibility.type !== "responsibility") {
+        return null;
+      }
+      return {
+        kind: "responsibility" as const,
+        node: responsibility,
+        subgraph: getResponsibilitySubgraph(graph, responsibilityId),
+      };
+    }
+
+    return null;
+  }, [ecosystemId, graph, responsibilityId]);
+
+  function setEcosystemScope(id: string) {
+    if (!id) {
+      setSearchParams({});
+      return;
+    }
+    setSearchParams({ ecosystem: id });
   }
 
-  function toggleEdgeType(type: RelationshipType) {
-    setSelectedEdgeTypes((current) =>
-      current.includes(type)
-        ? current.filter((item) => item !== type)
-        : [...current, type],
-    );
+  function setResponsibilityScope(id: string) {
+    if (!id) {
+      setSearchParams({});
+      return;
+    }
+    setSearchParams({ responsibility: id });
   }
 
   return (
     <Layout>
       <section className="panel">
-        <h2>Graph explorer</h2>
+        <h2>Scoped graph</h2>
         <p className="browse-description">
-          Click a node to open its detail page. Filter by node and relationship
-          types.
+          Explore one ecosystem or responsibility at a time. Pick a scope below or
+          follow links from the{" "}
+          <Link to="/" className="text-link">
+            matrix
+          </Link>
+          .
         </p>
 
-        <div className="filter-group">
-          <h3>Node types</h3>
-          <div className="filter-options">
-            {NODE_TYPE_OPTIONS.map((type) => (
-              <label key={type} className="filter-chip">
-                <input
-                  type="checkbox"
-                  checked={selectedNodeTypes.includes(type)}
-                  onChange={() => toggleNodeType(type)}
-                />
-                {type}
-              </label>
-            ))}
-          </div>
+        <div className="scope-picker">
+          <label className="matrix-select">
+            <span className="filter-label">Ecosystem</span>
+            <select
+              value={ecosystemId}
+              onChange={(event) => setEcosystemScope(event.target.value)}
+            >
+              <option value="">Select ecosystem…</option>
+              {ecosystems.map((ecosystem) => (
+                <option key={ecosystem.id} value={ecosystem.id}>
+                  {ecosystem.name}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <span className="scope-picker-divider">or</span>
+
+          <label className="matrix-select">
+            <span className="filter-label">Responsibility</span>
+            <select
+              value={responsibilityId}
+              onChange={(event) => setResponsibilityScope(event.target.value)}
+            >
+              <option value="">Select responsibility…</option>
+              {responsibilities.map((responsibility) => (
+                <option key={responsibility.id} value={responsibility.id}>
+                  {responsibility.name}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
 
-        <div className="filter-group">
-          <h3>Relationship types</h3>
-          <div className="filter-options">
-            {EDGE_TYPE_OPTIONS.map((type) => (
-              <label key={type} className="filter-chip">
-                <input
-                  type="checkbox"
-                  checked={selectedEdgeTypes.includes(type)}
-                  onChange={() => toggleEdgeType(type)}
-                />
-                {type.replaceAll("_", " ")}
-              </label>
-            ))}
-          </div>
-        </div>
-
-        <ul className="stats">
-          <li>{subgraph.nodes.length} nodes</li>
-          <li>{subgraph.edges.length} edges</li>
-        </ul>
-        {selectedEdgeTypes.length === 0 ? (
-          <p className="empty-state">
-            No relationship types selected — edges are hidden.
+        {ecosystemId && responsibilityId ? (
+          <p className="error">
+            Only one scope applies. Clear one selector to continue.
           </p>
         ) : null}
-        {selectedNodeTypes.length === 0 ? (
-          <p className="empty-state">No node types selected.</p>
-        ) : null}
+
+        {scope ? (
+          <ul className="stats">
+            <li>{scope.kind}: {scope.node.name}</li>
+            <li>{scope.subgraph.nodes.length} nodes</li>
+            <li>{scope.subgraph.edges.length} edges</li>
+          </ul>
+        ) : (
+          <p className="empty-state">Select an ecosystem or responsibility to view the graph.</p>
+        )}
       </section>
 
-      <section className="panel graph-panel">
-        <GraphCanvas subgraph={subgraph} height={520} />
-      </section>
+      {scope ? (
+        <section className="panel graph-panel">
+          <GraphCanvas subgraph={scope.subgraph} height={520} />
+        </section>
+      ) : null}
     </Layout>
   );
 }

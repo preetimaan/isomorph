@@ -11,6 +11,7 @@ import {
   getEcosystemsForTechnology,
   getNode,
   getRelatedEdges,
+  getResponsibilitySubgraph,
   getResponsibilitiesForTechnology,
   type NodeType,
 } from "@/graph";
@@ -94,6 +95,26 @@ export function NodeDetailPage({ nodeType, id }: NodeDetailPageProps) {
         </>
       ) : null}
 
+      {node.type === "responsibility" ? (
+        <section className="panel">
+          <div className="section-header">
+            <div>
+              <h2>Responsibility map</h2>
+              <p className="browse-description">
+                Technologies that fulfill this responsibility and their ecosystems.
+              </p>
+            </div>
+            <Link to={`/graph?responsibility=${id}`} className="text-link">
+              Open scoped graph
+            </Link>
+          </div>
+          <GraphCanvas
+            subgraph={getResponsibilitySubgraph(graph, id)}
+            height={460}
+          />
+        </section>
+      ) : null}
+
       {ecosystemSubgraph ? (
         <section className="panel graph-panel">
           <div className="section-header">
@@ -104,8 +125,8 @@ export function NodeDetailPage({ nodeType, id }: NodeDetailPageProps) {
                 ecosystem.
               </p>
             </div>
-            <Link to="/graph" className="text-link">
-              View full graph
+            <Link to={`/graph?ecosystem=${id}`} className="text-link">
+              Open scoped graph
             </Link>
           </div>
           <GraphCanvas subgraph={ecosystemSubgraph} height={460} />
