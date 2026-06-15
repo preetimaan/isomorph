@@ -346,11 +346,7 @@ export function HomePage() {
                 groupedRows.map((group) => (
                   <tbody key={group.ecosystem?.id ?? "unassigned"}>
                     <tr className="matrix-group-header">
-                      <th
-                        scope="rowgroup"
-                        colSpan={columnCount}
-                        className="matrix-sticky-col"
-                      >
+                      <th scope="rowgroup" className="matrix-sticky-col matrix-group-label">
                         <Link
                           to={
                             group.ecosystem
@@ -365,6 +361,11 @@ export function HomePage() {
                           {group.rows.length} technologies
                         </span>
                       </th>
+                      <td
+                        colSpan={columnCount - 1}
+                        className="matrix-group-fill"
+                        aria-hidden="true"
+                      />
                     </tr>
                     {group.rows.map((row) => (
                       <MatrixRow

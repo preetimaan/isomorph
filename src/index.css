@@ -931,6 +931,17 @@ button.filter-chip:hover {
   border-top: 1px solid #2d3142;
 }
 
+.matrix-group-header .matrix-sticky-col {
+  z-index: 2;
+  background: #1a1f2e;
+}
+
+.matrix-group-fill {
+  background: #1a1f2e;
+  border-top: 1px solid #2d3142;
+  padding: 0;
+}
+
 .matrix-group-link {
   color: #c58af9;
   text-decoration: none;

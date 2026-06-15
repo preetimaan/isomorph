@@ -7,9 +7,14 @@ import { NodeLink } from "./NodeLink";
 interface SearchBarProps {
   graph: GraphData;
   limit?: number;
+  showSuggestions?: boolean;
 }
 
-export function SearchBar({ graph, limit = 12 }: SearchBarProps) {
+export function SearchBar({
+  graph,
+  limit = 12,
+  showSuggestions = false,
+}: SearchBarProps) {
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
   const search = useMemo(() => createFuzzyNodeSearch(graph), [graph]);
@@ -33,16 +38,20 @@ export function SearchBar({ graph, limit = 12 }: SearchBarProps) {
           }
         }}
       />
-      <ul className="results">
-        {results.map((node) => (
-          <li key={node.id}>
-            <NodeLink node={node} className="result-link" />
-            <span className="node-id">{node.id}</span>
-          </li>
-        ))}
-      </ul>
-      {query && !results.length ? (
-        <p className="empty-state">No nodes match your search.</p>
+      {showSuggestions ? (
+        <>
+          <ul className="results">
+            {results.map((node) => (
+              <li key={node.id}>
+                <NodeLink node={node} className="result-link" />
+                <span className="node-id">{node.id}</span>
+              </li>
+            ))}
+          </ul>
+          {query && !results.length ? (
+            <p className="empty-state">No nodes match your search.</p>
+          ) : null}
+        </>
       ) : null}
     </section>
   );
